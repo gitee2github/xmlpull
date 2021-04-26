@@ -1,0 +1,299 @@
+<html><head>
+<title>XmlPull API Addons
+</title>
+</head>
+
+<body bgcolor="white">
+
+<h1>XmlPull API Addons
+</h1>
+
+<h2>What is it?</h2>
+
+<p>Addons are reusable components that built on top of XmlPull API.
+
+</p><p>
+All addons can be compiled by build target <code>addons</code> (use: <code>ant addons</code>)
+<p>&nbsp;</p>
+
+
+
+<a name="wrapper"><h2>Wrapper: Extended Pull Parser and Serializer Interfaces</h2>
+</a>
+
+<p>This package provides extended XmlPullParser and XmlSerializer interfaces
+called XmlPullParserWrapper and XmlSerializerWrapper that has additional
+methods that make it more convenient and more concise to write parsing and serialzing
+code by providing seemlesly integrated additional methods.
+</p>
+
+<p>Wrappers can be uesd exactly the same as XmlPullParser and XmlSerialzier as those
+interface <b>extend</b> them.
+
+<p>Here is example usage:</p>
+<pre>import org.xmlpull.v1.wrapper.*;
+
+XmlPullWrapperFactory wf = XmlPullWrapperFactory.newInstance();
+
+XmlPullParserWrapper pw = wf.newPullParserWrapper();
+pw.setInput( ... );
+pw.require(XmlPullParser.START_TAG, ..., ...);
+pw.skipSubTree();
+
+XmlSerializerWrapper ser = wf.newSerializerWrapper();
+ser.setOutput(out);
+ser.setCurrentNamespaceForElements("http://www.w3.org/1999/xhtml");
+ser.startTag("p").attribute("class", "abstract").text("Hello");
+ser.endTag("p");
+ser.fragment("&lt;p class=\"hint\"&gt;write blog title below&lt;/p&gt;");
+</pre>
+
+<p>Another example is how to quickly copy XML input to output:</p>
+
+<pre>while (pp.nextToken() != XmlPullParser.END_DOCUMENT) {
+  ser.event(pp);
+}
+</pre>
+
+<p>It can be compiled by build target <code>wrapper</code>
+
+</p><p>Source code is available in <code>
+<a href="../addons/java/wrapper/src/org/xmlpull/v1/wrapper">addons/java/wrapper</a></code>&nbsp;
+(<a href="http://www.xmlpull.org/viewcvs/xmlpull-api-v1/addons/java/wrapper/src/org/xmlpull/v1/wrapper/">view
+CVS</a>).</p><p>
+TODO: add link to JavaDoc</p>
+
+
+<p>
+&nbsp;</p>
+
+
+
+
+<a name="util"><h2>Util Addon</h2>
+</a>
+
+<p>This class provides set of static utility methods for XmlPull parser and
+serializer.
+</p>
+
+<p>Here is example usage:</p>
+<pre>import org.xmlpull.v1.util.XmlPullUtil;
+
+XmlPullParser parser = ...
+parser.require(XmlPullParser.START_TAG, ..., ...);
+XmlPullUtil.skipSubTree(pp);
+</pre>
+
+<p>It can be compiled by build target <code>util</code>
+
+</p><p>Source code is available in <code>
+<a href="../addons/java/util/src/org/xmlpull/v1/util/XmlPullUtil.java">addons/java/util</a></code>
+(<a href="http://www.xmlpull.org/viewcvs/xmlpull-api-v1/addons/java/util/src/org/xmlpull/v1/util/">view
+CVS</a>).</p><p>
+TODO: add link to JavaDoc</p>
+
+
+
+
+
+<p>
+&nbsp;</p>
+
+
+
+
+<a name="dom2_builder">
+<h2>DOM2 builder</h2>
+</a>
+
+<p>This is <em>very</em> simple class to build DOM2 tree using XmlPull parser.
+</p>
+
+<p>Here is example usage:</p>
+<pre>import org.xmlpull.v1.dom2_builder.DOM2XmlPullBuilder;
+
+Reader reader = ...
+DOM2XmlPullBuilder builder = new DOM2XmlPullBuilder();
+dom2builder.parse(reader);
+</pre>
+
+<p>It can be compiled by build target <code>dom2_builder</code>
+
+</p><p>Source code is available in <code>addons/java/dom2_builder</code>.
+
+</p><p>
+NOTE: this is very simple class and builds DOM2 tree that contains only elements
+and text content (collated).
+</p>
+
+
+
+
+<p>
+&nbsp;</p>
+
+
+
+
+<a name="parser_pool">
+<h2>Parser pool</h2>
+</a>
+
+<p>This class provides simple parser pool to facilitate parser reuse.
+
+<p>Example usage:</p>
+
+<pre>import org.xmlpull.v1.parser_pool.XmlPullParserPool;
+
+XmlPullParserPool pool = new XmlPullParserPool();
+XmlPullParser parser = pool.getPullParserFromPool();
+// use parser ...
+pool.returnPullParserToPool(p1);
+</pre>
+
+<p>It can be compiled by build target <code>parser_pool</code>
+
+</p><p>Source code is available in <code>addons/java/parser_pool</code>.</p>
+
+
+
+<p>NOTE: parser pool is safe to share between multiple threads but&nbsp; parser
+instances<b> are not </b>safe to share.</p>
+
+
+
+<p>&nbsp;</p>
+
+
+
+<a name="sax2">
+<h2>SAX2 driver</h2>
+</a>
+
+<p>This addon allows to use SAX2 API with XmlPull parser. This driver implements
+SAX2
+
+</p>
+
+<p>To use simply set system property
+<code>-Dorg.xml.sax.driver=org.xmlpull.v1.sax2.Driver</code> and then SAX2
+standard API:</p>
+
+<pre>XMLReader parser = XMLReaderFactory.createXMLReader ();</pre>
+
+<p>or manually create driver:
+</p>
+
+<pre>XMLReader parser = new <code>org.xmlpull.v1.sax2.Driver</code>();</pre>
+
+<pre></pre>
+
+<p>This addon can be compiled by build target <code>sax2</code>
+
+</p><p>Source code is available in <code>addons/java/sax2_driver</code>.
+
+</p><p>
+NOTE: this driver is not going to work in MIDP environments. To port it to J2ME
+MIDP it is required to change also SAX2 API and to modify Driver not to use URL
+class that is not available in MIDP (check Driver.parse() method).
+</p>
+
+<p>
+&nbsp;</p>
+
+<a name="xmlrpc">
+<h2>XML RPC parser</h2>
+</a>
+<p>It can be compiled by build target <code>xmlrpc</code>
+
+</p><p>Source code is available in <code>addons/java/xmlrpc</code>. <br>
+&nbsp;</p>
+
+<a name="notes">
+<h2>Additional notes</h2>
+</a>
+
+<a name="sax2_example">
+<h3>How to extend SAX2 driver to provide Attributes that are safe to keep after
+startElement?</h3>
+</a>
+
+<p>If you want to extend SAX2 Driver to provides a separate Attributes object
+for each startElement call (so it is safe to keep the reference to Attributes)
+then create class AttributesCachingDriver that extends current SAX2 driver
+(need to do it was requested by Holger Krug), for example:
+</p>
+<pre>import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import org.xmlpull.v1.sax2.Driver;
+
+public class AttributesCachingDriver extends Driver
+{
+    public AttributesCachingDriver() throws XmlPullParserException {
+        super();
+    }
+
+    public AttributesCachingDriver(XmlPullParser pp) throws XmlPullParserException {
+        super(pp);
+    }
+
+    /**
+     * Calls startElement(String, String, String, Attributes) startElement} on the
+     * ContentHandlerwith copied attribute values. The Attributes object may
+     * be stored as each call gets a new copy of Attributes.
+     */
+    protected void startElement(String namespace, String localName, String qName) throws SAXException {
+        contentHandler.startElement(namespace, localName, qName, new AttributesImpl(this));
+    }
+
+}
+</pre>
+
+
+</p>
+
+
+<p>
+<address><a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a>
+  and <a href="http://www.trantor.de/stefan.haustein/">Stefan Haustein</a>
+</address>
+
+</p><hr>
+<font size="-1">
+Last modified $Id: addons.html,v 1.7 2003/05/19 14:43:03 aslom Exp $
+</font>
+
+<!--extra space at bottom for hyperlinks #anchors to work -->
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+<p> <br>
+
+</body></html>
